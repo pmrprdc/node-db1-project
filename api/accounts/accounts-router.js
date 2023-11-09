@@ -42,9 +42,43 @@ router.delete('/:id', (req, res, next) => {
   // DO YOUR MAGIC
 })
 
-router.use((err, req, res, next) => { // eslint-disable-line
+
+router.post('/', (req, res, next) => {
   // DO YOUR MAGIC
-  res.status(err.statis || 500).json({message: err.message || "server errorr"})
 })
 
+router.put('/:id', (req, res, next) => {
+  // DO YOUR MAGIC
+});
+
+router.delete('/:id', (req, res, next) => {
+  // DO YOUR MAGIC
+})
+
+
+
+
+router.use((err, req, res, next) => {
+  // Log the error internally
+  console.error(err);
+
+  // Determine if the error is a known client-side error or a server-side error
+  const isClientError = err.status >= 400 && err.status < 500;
+
+  // Respond with a detailed message in development, simpler message in production
+  const responseMessage = process.env.NODE_ENV === 'development' || isClientError
+    ? err.message
+    : "An unexpected error has occurred";
+
+  // Set a default error status if not provided
+  const errorStatus = err.status || 500;
+
+  // Respond with the appropriate status code and message
+  res.status(errorStatus).json({
+    message: responseMessage,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }) // Include stack trace in development mode
+  });
+});
+
 module.exports = router;
+
