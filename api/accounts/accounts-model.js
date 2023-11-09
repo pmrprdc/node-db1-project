@@ -1,3 +1,6 @@
+const database = require('../../data/db-config')
+
+
 const getAll = () => {
   // DO YOUR MAGIC
 }
