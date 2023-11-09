@@ -3,14 +3,14 @@ const database = require('../../data/db-config')
 
 const getAll = () => {
   // DO YOUR MAGIC
-  database.getAll();
+  return database('accounts');
 }
 
 const getById = id => {
   // DO YOUR MAGIC
   return database('accounts') // Replace 'accounts' with your actual table name
     .select('*')
-    .where({ id })
+    .where({ id }).first();
 }
 
 const create = account => {
@@ -22,7 +22,7 @@ const create = account => {
 
 const updateById = (id, account) => {
   // DO YOUR MAGIC
-  .where({ id }) // Assuming your identifier column is named 'id'
+ return database(accounts).where({ id }) // Assuming your identifier column is named 'id'
   .update(account)
   .returning('*');
 }
