@@ -1,6 +1,11 @@
 const express = require('express')
 const router = express.Router()
 const accountsModel = require('./accounts-model')
+const {
+  checkAccountPayload,
+  checkAccountNameUnique,
+  checkAccountId
+} = require('./accounts-middleware');
 
 router.get('/', async(req, res, next) => {
   // DO YOUR MAGIC
@@ -30,8 +35,21 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/', (req, res, next) => {
+router.post('/',checkAccountPayload,async(req, res, next) => {
   // DO YOUR MAGIC
+  try {
+    const accountData = req.body;
+    
+    const newAccount = await accountsModel.create(accountData);
+    if (newAccount) {
+      res.status(201).json(newAccount);
+    } else {
+      res.status(400).json({ message: "Failed to create the account" });
+    }
+  } catch (err) {
+    next(err);
+  }
+  
 })
 
 router.put('/:id', (req, res, next) => {
@@ -60,7 +78,7 @@ router.delete('/:id', (req, res, next) => {
 
 router.use((err, req, res, next) => {
   // Log the error internally
-  console.error(err);
+  console.log(err);
 
   // Determine if the error is a known client-side error or a server-side error
   const isClientError = err.status >= 400 && err.status < 500;

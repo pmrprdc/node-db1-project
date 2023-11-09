@@ -13,11 +13,15 @@ const getById = id => {
     .where({ id }).first();
 }
 
-const create = account => {
+const create = async (account) => {
+  // Insert the account and get the ID of the newly inserted account
+  const [id] = await database('accounts') // Replace 'accounts' with your actual table name
+    .insert(account);
+
+  // Now, retrieve the newly inserted account using the obtained ID
   return database('accounts') // Replace 'accounts' with your actual table name
-  .insert(account)
-  .returning('*');
-  // DO YOUR MAGIC
+    .where({ id })
+    .first(); // This will return only the first record found instead of an array
 }
 
 const updateById = (id, account) => {
