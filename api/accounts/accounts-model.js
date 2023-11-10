@@ -24,12 +24,15 @@ const create = async (account) => {
     .first(); // This will return only the first record found instead of an array
 }
 
-const updateById = (id, account) => {
-  // DO YOUR MAGIC
- return database(accounts).where({ id }) // Assuming your identifier column is named 'id'
-  .update(account)
-  .returning('*');
+const updateById = async (id, account) => {
+  const updated = await database('accounts').where({ id }).update(account);
+  if (updated) {
+    return database('accounts').where({ id }).first();
+  } else {
+    return null; // or appropriate handling if no update occurred
+  }
 }
+
 
 const deleteById = id => {
   // DO YOUR MAGIC
