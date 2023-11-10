@@ -35,11 +35,10 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.post('/',checkAccountPayload,async(req, res, next) => {
+router.post('/',checkAccountPayload,checkAccountNameUnique, async(req, res, next) => {
   // DO YOUR MAGIC
   try {
     const accountData = req.body;
-    
     const newAccount = await accountsModel.create(accountData);
     if (newAccount) {
       res.status(201).json(newAccount);
@@ -81,20 +80,15 @@ router.use((err, req, res, next) => {
   console.log(err);
 
   // Determine if the error is a known client-side error or a server-side error
-  const isClientError = err.status >= 400 && err.status < 500;
+ 
 
   // Respond with a detailed message in development, simpler message in production
-  const responseMessage = process.env.NODE_ENV === 'development' || isClientError
-    ? err.message
-    : "An unexpected error has occurred";
-
   // Set a default error status if not provided
   const errorStatus = err.status || 500;
 
   // Respond with the appropriate status code and message
   res.status(errorStatus).json({
-    message: responseMessage,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }) // Include stack trace in development mode
+    message: err.message || "There was an error"//
   });
 });
 

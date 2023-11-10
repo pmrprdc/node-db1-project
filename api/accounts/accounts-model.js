@@ -38,10 +38,23 @@ const deleteById = id => {
   .del();
 }
 
+const findByName = async name => {
+  const trimmedName = name.trim();
+  const account = await database('accounts') // Replace 'accounts' with your actual table name
+    .where('name', trimmedName)
+    .first(); // This will return only the first record found with that name
+
+  return account; // Returns the account if found, or undefined if not found
+};
+
+
 module.exports = {
   getAll,
   getById,
   create,
   updateById,
   deleteById,
+  findByName
+ 
+  
 }
