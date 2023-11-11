@@ -64,9 +64,21 @@ router.put('/:id', checkAccountPayload, checkAccountId, async (req, res, next) =
   }
 });
 
-router.delete('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
-})
+router.delete('/:id', checkAccountId, async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const deleted = await accountsModel.deleteById(id);
+    if (deleted) {
+      res.status(200).json({ message: 'Account deleted successfully' });
+    } else {
+      // In case the account does not exist
+      res.status(404).json({ message: 'Account not found' });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
 
 
 router.post('/', (req, res, next) => {
@@ -77,9 +89,7 @@ router.put('/:id', (req, res, next) => {
   // DO YOUR MAGIC
 });
 
-router.delete('/:id', (req, res, next) => {
-  // DO YOUR MAGIC
-})
+
 
 
 
